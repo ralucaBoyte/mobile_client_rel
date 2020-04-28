@@ -1,0 +1,23 @@
+node_modules/**/*
+.expo/*
+package-lock.json
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+web-report/
+
+# macOS
+.DS_Store
+*.tar.gz
+
+# Android
+.gradle
+local.properties
+android/out
+android/app/build
+!app/build/outputs/apk/app-release.apk
