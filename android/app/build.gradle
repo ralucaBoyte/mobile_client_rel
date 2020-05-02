@@ -83,7 +83,7 @@ project.ext.react = [
 
 apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/expo-updates/expo-updates.gradle"
+//apply from: "../../node_modules/expo-updates/expo-updates.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -186,6 +186,7 @@ dependencies {
     implementation project(':react-native-navigation')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation project(':react-native-vector-icons')
     addUnimodulesDependencies()
 
     if (enableHermes) {
@@ -205,3 +206,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+project.ext.vectoricons = [
+    iconFontNames: [ 'Ionicons.ttf' ] // Name of the font files you want to copy
+]
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

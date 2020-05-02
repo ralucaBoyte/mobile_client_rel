@@ -4,6 +4,7 @@ import { uiStartLoading, uiStopLoading } from "./index";
 import startMainTabs from "../../screens/MainTabs/startMainTabs";
 import App from "../../../App";
 import params from "../../../params-sample";
+import {Navigation} from "react-native-navigation";
 export const tryAuth = (authData, authMode) => {
     return dispatch => {
         dispatch(uiStartLoading());
@@ -15,11 +16,23 @@ export const tryAuth = (authData, authMode) => {
         console.log(authData.username + "+++++++++++");
         console.log(authData.password + "+++++++++++");
 
+        let formBody = [];
+
+        let encodedUsername = encodeURIComponent("username");
+        let encodedUsernameValue = encodeURIComponent(authData.username);
+        formBody.push(encodedUsername + "=" + encodedUsernameValue);
+
+        let encodedPassword = encodeURIComponent("password");
+        let encodedPasswordValue = encodeURIComponent(authData.password);
+        formBody.push(encodedPassword + "=" + encodedPasswordValue);
+
+        formBody = formBody.join("&");
+
         fetch(url, {
             method: "POST",
             headers: {
-                "Accept": "application/json",
-                "content-type": "application/x-www-form-urlencoded"
+               // Accept: "application/json",
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: data
 
@@ -29,8 +42,6 @@ export const tryAuth = (authData, authMode) => {
             .then(parsedRes => {
                 dispatch(uiStopLoading());
                 console.log(parsedRes);
-               // console.log(parsedRes[0]);
-
                 console.log(parsedRes.access_token);
                 if (!parsedRes.access_token) {
                     alert("Authentication failed, please try again!");
@@ -170,14 +181,25 @@ export const authGetToken = () => {
 export const authClearStorage = () => {
     return dispatch => {
         AsyncStorage.removeItem("ap:auth:access_token");
-        AsyncStorage.removeItem("ap:auth:refresh_token");
+        return AsyncStorage.removeItem("ap:auth:refresh_token");
     };
+};
+
+let restartApp = () => {
+    let loginRoot = {
+        root: {
+            component: {
+                name: 'mobile_client_rel'
+            }
+        }
+    };
+    Navigation.setRoot(loginRoot);
 };
 
 export const authLogout = () => {
     return dispatch => {
         dispatch(authClearStorage()).then(() => {
-            App();
+            restartApp();
         });
         dispatch(authRemoveToken());
     };

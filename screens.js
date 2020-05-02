@@ -10,32 +10,38 @@ import SideDrawer from "./src/screens/SideDrawer/SideDrawer";
 
 const store = configureStore();
 export function registerScreens() {
-    /*Navigation.registerComponentWithRedux(
-        "mobile_client.AuthScreen",
-        () => AuthScreen,
-        Provider,store);
     Navigation.registerComponentWithRedux(
-        "mobile_client.SharePlaceScreen",
+        "mobile_client_rel.AuthScreen",
+        () => AuthScreen,
+        Provider, store);
+
+    Navigation.registerComponentWithRedux(
+        "mobile_client_rel.SharePlaceScreen",
         () => SharePlaceScreen,
         Provider,store);
     Navigation.registerComponentWithRedux(
-        "mobile_client.FindPlaceScreen",
+        "mobile_client_rel.FindPlaceScreen",
         () => FindPlaceScreen,
         Provider,store);
     Navigation.registerComponentWithRedux(
-        "mobile_client.ScanScreen",
+        "mobile_client_rel.ScanScreen",
         () => ScanScreen,
         Provider,store);
     Navigation.registerComponentWithRedux(
-        "mobile_client.PlaceDetailScreen",
+        "mobile_client_rel.PlaceDetailScreen",
         () => PlaceDetailScreen,
         Provider, store
     );
-    Navigation.registerComponent(
-        "mobile_client.SideDrawer",
+    Navigation.registerComponentWithRedux(
+        "mobile_client_rel.SideDrawer",
         () => SideDrawer,
-    );*/
-
-// Start a App
+        Provider, store
+    );
+    Navigation.registerComponent(
+        "mobile_client_rel.PlaceDetailScreen",
+        () => PlaceDetailScreen,
+        store,
+        Provider
+    );
 
 }

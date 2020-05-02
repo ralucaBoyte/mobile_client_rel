@@ -37,7 +37,7 @@ class ScanScreen extends Component {
                 }
                 bottomContent={
                     <TouchableOpacity style={styles.buttonTouchable}>
-                        <Text style={styles.buttonText}>OK. Got it!</Text>
+                        <Text style={styles.buttonText}> </Text>
                     </TouchableOpacity>
                 }
             />

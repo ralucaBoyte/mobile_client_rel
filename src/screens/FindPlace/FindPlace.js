@@ -4,13 +4,29 @@ import {connect} from "react-redux";
 import PlaceList from "../../components/PlaceList/PlaceList";
 import {Navigation} from "react-native-navigation";
 class FindPlaceScreen extends Component{
+
+    static options() {
+        return {
+            topBar: {
+                leftButtons: {
+                    id: 'openDrawer',
+                    icon: require('../../assets/side_menu.png')
+                }
+            }
+        };
+    }
+
+    constructor(props) {
+        super(props);
+        Navigation.events().bindComponent(this);
+    }
     itemSelectedHandler = key => {
         const selPlace = this.props.places.find(place => {
             return place.key === key;
         });
         Navigation.push('myStack', {
             component:{
-                name: "ams_licenta.PlaceDetailScreen",
+                name: "mobile_client_rel.PlaceDetailScreen",
                 passProps: {
                     selectedPlace: selPlace
                 },
@@ -24,6 +40,17 @@ class FindPlaceScreen extends Component{
             }
         });
     };
+    navigationButtonPressed({ buttonId }) {
+        if (buttonId === "openDrawer") {
+            Navigation.mergeOptions('sideDrawerToggle', {
+                sideMenu: {
+                    left: {
+                        visible: true
+                    }
+                }
+            });
+        }
+    }
 
     render() {
         return (

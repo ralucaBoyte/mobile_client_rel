@@ -11,12 +11,12 @@ function MyStack() {
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen
-                    name="ams_licenta.AuthScreen"
+                    name="mobile_client_rel.AuthScreen"
                     component={AuthScreen}
                     options={{title: 'AuthScreen'}}
                 />
                 <Stack.Screen
-                    name="ams_licenta.SharePlaceScreen"
+                    name="mobile_client_rel.SharePlaceScreen"
                     component={SharePlaceScreen} />
             </Stack.Navigator>
         </NavigationContainer>
