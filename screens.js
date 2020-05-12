@@ -8,8 +8,8 @@ import {Provider} from "react-redux";
 import configureStore from './src/store/configureStore';
 import SideDrawer from "./src/screens/SideDrawer/SideDrawer";
 
-const store = configureStore();
-export function registerScreens() {
+//const store = configureStore();
+export function registerScreens(store) {
     Navigation.registerComponentWithRedux(
         "mobile_client_rel.AuthScreen",
         () => AuthScreen,

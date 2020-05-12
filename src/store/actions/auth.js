@@ -7,7 +7,7 @@ import params from "../../../params-sample";
 import {Navigation} from "react-native-navigation";
 export const tryAuth = (authData, authMode) => {
     return dispatch => {
-        dispatch(uiStartLoading());
+        //dispatch(uiStartLoading());
         let url = `${params.apiUrl}/authentication/login`;
         let data = qs.stringify({
             username: authData.username,
@@ -40,7 +40,7 @@ export const tryAuth = (authData, authMode) => {
 
             .then(res => res.json())
             .then(parsedRes => {
-                dispatch(uiStopLoading());
+                //dispatch(uiStopLoading());
                 console.log(parsedRes);
                 console.log(parsedRes.access_token);
                 if (!parsedRes.access_token) {
@@ -58,7 +58,7 @@ export const tryAuth = (authData, authMode) => {
             .catch(err => {
                 console.log(err);
                 alert("Authentication failed, please try again!");
-                dispatch(uiStopLoading());
+                //dispatch(uiStopLoading());
             });
     };
 };
@@ -82,6 +82,7 @@ export const authSetToken = (token, refreshToken) => {
 export const authGetToken = () => {
     return (dispatch, getState) => {
         const promise = new Promise((resolve, reject) => {
+            console.log(getState());
             const access_token = getState().auth.access_token;
             if (!access_token) {
                 reject();

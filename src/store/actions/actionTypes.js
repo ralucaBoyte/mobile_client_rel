@@ -15,3 +15,5 @@ export const SIGNIN_SUCCESS = 'SIGNIN_SUCCESS';
 export const SIGNIN_FAIL = 'SIGNIN_FAIL';
 export const SIGNIN = 'SIGNIN';
 export const SIGNIN_CLEARDOWN = 'SIGNIN_CLEARDOWN';
+
+export const SHOW_MESSAGE = "SHOW_MESSAGE";

@@ -5,18 +5,36 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    Linking
+    Linking,
+    View,
+    Dimensions
 } from 'react-native';
 import { connect } from "react-redux";
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {markAttendance} from "../../store/actions/attendance";
+import {markAttendance, setAlertMessage} from "../../store/actions/attendance";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 class ScanScreen extends Component {
+    // constructor(props) {
+    //     super(props);
+    //     this.state = { showAlert: this.props.attendance.showAlert };
+    // };
+    //
+    // showAlert = () => {
+    //     this.setState({
+    //         showAlert: this.props.attendance.showAlert
+    //     });
+    // };
+    //
+    // hideAlert = () => {
+    //     this.setState({
+    //         showAlert: this.props.attendance.showAlert
+    //     });
+    // };
     onSuccess = e => {
-        let attendance_info_id = e.data[0];
-        console.log(e.data[0]);
+        let attendance_info_id = e.data.split("--")[0];
+        console.log(attendance_info_id);
         this.markAttendanceHandler(attendance_info_id);
-
     };
 
     markAttendanceHandler = (attendance_info_id) => {
@@ -25,8 +43,33 @@ class ScanScreen extends Component {
         )
     };
 
+    closeMessageHandler = () => {
+        this.props.hideMessage(false);
+    };
+
     render() {
+       // console.log(this.props.attendance);
+        let showAlert = this.props.attendance.showAlert;
+        let customMessage = `You marked attendance at \n ` + this.props.attendance.course + '-' + this.props.attendance.activity;
+        let messageAlert = null;
+        if(showAlert) {
+            messageAlert = <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="AwesomeAlert"
+                message={customMessage}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText="Great!"
+                confirmButtonColor="#DD6B55"
+                onConfirmPressed={() => {
+                    this.closeMessageHandler();
+                }}
+            />;
+        }
         return (
+            <View style={styles.container}>
             <QRCodeScanner
                 onRead={this.onSuccess}
                 //flashMode={QRCodeScanner.Constants.FlashMode.torch}
@@ -34,13 +77,17 @@ class ScanScreen extends Component {
                     <Text style={styles.centerText}>
                         Scan the QR code to mark your attendance
                     </Text>
+
                 }
                 bottomContent={
                     <TouchableOpacity style={styles.buttonTouchable}>
                         <Text style={styles.buttonText}> </Text>
                     </TouchableOpacity>
                 }
+                cameraStyle={{ height: Dimensions.get("window").height }}
             />
+                {messageAlert}
+            </View>
         );
     }
 }
@@ -62,16 +109,29 @@ const styles = StyleSheet.create({
     },
     buttonTouchable: {
         padding: 16
+    },
+    container:{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#F5FCFF"
     }
 });
 
+
+
+function mapStateToProps(state) {
+    return {
+        attendance: state.attendance
+    }
+}
 const mapDispatchToProps = dispatch => {
     return {
         onMarkAttendance: (attendance_info_id) =>
-            dispatch(markAttendance(attendance_info_id))
+            dispatch(markAttendance(attendance_info_id)),
+        hideMessage: () => dispatch(setAlertMessage(false))
     }
 };
 
-export default connect(null, mapDispatchToProps) (ScanScreen);
+export default connect(mapStateToProps, mapDispatchToProps) (ScanScreen);
 
-//AppRegistry.registerComponent('default', () => ScanScreen);

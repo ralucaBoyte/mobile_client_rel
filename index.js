@@ -6,7 +6,7 @@ import configureStore from './src/store/configureStore';
 import {registerScreens} from "./screens";
 
 const store = configureStore();
-registerScreens();
+registerScreens(store);
 
 const RNRedux = () => (
     <Provider store={store}>
