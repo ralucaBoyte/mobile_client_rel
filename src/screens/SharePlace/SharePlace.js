@@ -39,8 +39,8 @@ class SharePlaceScreen extends Component {
     }
 
 
-    componentWillMount() {
-        this.reset();
+    UNSAFE_componentWillMount() {
+       this.reset();
     }
 
     navigationButtonPressed({ buttonId }) {
@@ -81,7 +81,6 @@ class SharePlaceScreen extends Component {
     componentDidUpdate() {
         if (this.props.placeAdded) {
             this.props.navigator.switchToTab({ tabIndex: 0 });
-            // this.props.onStartAddPlace();
         }
     }
 

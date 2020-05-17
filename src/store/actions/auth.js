@@ -1,67 +1,101 @@
-import AsyncStorage from '@react-native-community/async-storage';import * as qs from "qs";
-import { TRY_AUTH, AUTH_SET_TOKEN, AUTH_REMOVE_TOKEN } from "./actionTypes";
+import AsyncStorage from '@react-native-community/async-storage';
+import * as qs from "qs";
+import {TRY_AUTH, AUTH_SET_TOKEN, AUTH_REMOVE_TOKEN, LOGIN_ERROR, SHOW_MESSAGE, CLOSE_LOGIN_ERROR} from "./actionTypes";
 import { uiStartLoading, uiStopLoading } from "./index";
 import startMainTabs from "../../screens/MainTabs/startMainTabs";
 import App from "../../../App";
 import params from "../../../params-sample";
 import {Navigation} from "react-native-navigation";
+import RNCryptor from 'react-native-rncryptor';
+
+let randomString = require('random-string');
+
+export const getSecretPassword = async () => {
+    try {
+        const value = await AsyncStorage.getItem('ap:auth:secret_password');
+        if (value != null) {
+            console.log("SECRET PASSWORD ALREADY IN STORE");
+            return value;
+        } else {
+            let secret_password = randomString();
+            console.log("GENERATED NEW SECRET PASSWORD");
+            AsyncStorage.setItem('ap:auth:secret_password', secret_password);
+            return secret_password;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
+};
+
+
 export const tryAuth = (authData, authMode) => {
-    return dispatch => {
+    return async dispatch => {
         //dispatch(uiStartLoading());
+        let secret_password = await getSecretPassword();
+        console.log(secret_password);
+
         let url = `${params.apiUrl}/authentication/login`;
-        let data = qs.stringify({
-            username: authData.username,
-            password: authData.password
-        });
         console.log(authData.username + "+++++++++++");
         console.log(authData.password + "+++++++++++");
 
-        let formBody = [];
-
-        let encodedUsername = encodeURIComponent("username");
-        let encodedUsernameValue = encodeURIComponent(authData.username);
-        formBody.push(encodedUsername + "=" + encodedUsernameValue);
-
-        let encodedPassword = encodeURIComponent("password");
-        let encodedPasswordValue = encodeURIComponent(authData.password);
-        formBody.push(encodedPassword + "=" + encodedPasswordValue);
-
-        formBody = formBody.join("&");
-
-        fetch(url, {
-            method: "POST",
-            headers: {
-               // Accept: "application/json",
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: data
-
-        })
-
-            .then(res => res.json())
-            .then(parsedRes => {
-                //dispatch(uiStopLoading());
-                console.log(parsedRes);
-                console.log(parsedRes.access_token);
-                if (!parsedRes.access_token) {
-                    alert("Authentication failed, please try again!");
-                } else {
-                    dispatch(
-                        authStoreToken(
-                            parsedRes.access_token,
-                            parsedRes.refresh_token
-                        )
-                    );
-                    startMainTabs();
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                alert("Authentication failed, please try again!");
-                //dispatch(uiStopLoading());
+        RNCryptor.encrypt(authData.username, secret_password).then((encryptedbase64) => {
+            console.log(encryptedbase64);
+            let data = qs.stringify({
+                username: authData.username,
+                password: authData.password,
+                keyphrase: secret_password,
+                message: encryptedbase64
             });
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    // Accept: "application/json",
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: data
+
+            })
+
+                .then(res => res.json())
+                .then(parsedRes => {
+                    console.log(parsedRes);
+                    console.log(parsedRes.access_token);
+                    if (!parsedRes.access_token) {
+                        //alert("Authentication failed, please try again!");
+                        //dispatch(loginError(parsedRes));
+                        alert(parsedRes);
+                    } else {
+                        dispatch(
+                            authStoreToken(
+                                parsedRes.access_token,
+                                parsedRes.refresh_token
+                            )
+                        );
+                        startMainTabs();
+                    }
+                })
+                .catch(err => {
+                    console.log("CATCH ERROR");
+                    console.log(err);
+                    alert(err);
+                });
+
+        }).catch((error) => {
+            console.log(error)
+        });
+
     };
 };
+
+export const loginError = (message) =>{
+    return {
+        type: LOGIN_ERROR,
+        errors: message
+    };
+};
+
+
 
 export const authStoreToken = (access_token, refresh_token) => {
     return dispatch => {
@@ -182,6 +216,7 @@ export const authGetToken = () => {
 export const authClearStorage = () => {
     return dispatch => {
         AsyncStorage.removeItem("ap:auth:access_token");
+        //AsyncStorage.removeItem("ap:auth:secret_password");
         return AsyncStorage.removeItem("ap:auth:refresh_token");
     };
 };

@@ -22,6 +22,8 @@ import validate from "../../utility/validation";
 import { tryAuth, authAutoSignIn } from "../../store/actions/index";
 import { Card, CardSection, Input, Button, Spinner, ImageView } from '../common';
 import { emailChanged, passwordChanged, signin, cleardown } from '../../store/actions/signin';
+import AwesomeAlert from "react-native-awesome-alerts";
+import {setAlertMessage} from "../../store/actions/attendance";
 
 class AuthScreen extends Component {
     state = {
@@ -77,6 +79,9 @@ class AuthScreen extends Component {
         this.props.onTryAuth(authData, this.state.authMode);
     }
 
+    closeMessageHandler = () => {
+        this.props.hideMessage(false);
+    };
     onForgotPasswordButtonPress() {
         //Actions.forgot();
     }
@@ -153,13 +158,6 @@ class AuthScreen extends Component {
                         ...prevState.controls.confirmPassword,
                         valid:
                             true
-                            /*key === "password"
-                                ? validate(
-                                prevState.controls.confirmPassword.value,
-                                prevState.controls.confirmPassword.validationRules,
-                                connectedValue
-                                )
-                                : prevState.controls.confirmPassword.valid*/
                     },
                     [key]: {
                         ...prevState.controls[key],
@@ -177,18 +175,32 @@ class AuthScreen extends Component {
     };
 
     render() {
+        let showAlert = this.props.auth.showErrors;
+        console.log(showAlert);
         let headingText = null;
         let confirmPasswordControl = null;
+        let messageAlert = null;
+        let customMessage = this.props.auth.errors;
+        if(showAlert) {
+            messageAlert = <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="AwesomeAlert"
+                message={customMessage}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText="OK!"
+                confirmButtonColor="#DD6B55"
+                onConfirmPressed={() => {
+                    this.closeMessageHandler();
+                }}
+            />;
+        }
         let submitButton = (
             <ButtonWithBackground
                 color="#29aaf4"
                 onPress={this.authHandler}
-                /*disabled={
-                    (!this.state.controls.confirmPassword.valid &&
-                        this.state.authMode === "signup") ||
-                    !this.state.controls.email.valid ||
-                    !this.state.controls.password.valid
-                }*/
             >
                 Submit
             </ButtonWithBackground>
@@ -201,86 +213,11 @@ class AuthScreen extends Component {
                 </MainText>
             );
         }
-        /*if (this.state.authMode === "signup") {
-            confirmPasswordControl = (
-                <View
-                    style={
-                        this.state.viewMode === "portrait"
-                            ? styles.portraitPasswordWrapper
-                            : styles.landscapePasswordWrapper
-                    }
-                >
-                    <DefaultInput
-                        placeholder="Confirm Password"
-                        style={styles.input}
-                        value={this.state.controls.confirmPassword.value}
-                        onChangeText={val => this.updateInputState("confirmPassword", val)}
-                        valid={this.state.controls.confirmPassword.valid}
-                        touched={this.state.controls.confirmPassword.touched}
-                        secureTextEntry
-                    />
-                </View>
-            );
-        }*/
+
         if (this.props.isLoading) {
             submitButton = <ActivityIndicator />;
         }
         return (
-            /*<ImageBackground source={beautiful_place} style={styles.backgroundImage}>
-                <KeyboardAvoidingView style={styles.container} behavior="padding">
-                    {headingText}
-                    <ButtonWithBackground
-                        color="#29aaf4"
-                        onPress={this.switchAuthModeHandler}
-                    >
-                        Switch to {this.state.authMode === "login" ? "Sign Up" : "Login"}
-                    </ButtonWithBackground>
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={styles.inputContainer}>
-                            <DefaultInput
-                                placeholder="Username"
-                                style={styles.input}
-                                value={this.state.controls.username.value}
-                                onChangeText={val => this.updateInputState("username", val)}
-                                valid={this.state.controls.username.valid}
-                                touched={this.state.controls.username.touched}
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                               // keyboardType="email-address"
-                            />
-                            <View
-                                style={
-                                    this.state.viewMode === "portrait" ||
-                                    this.state.authMode === "login"
-                                        ? styles.portraitPasswordContainer
-                                        : styles.landscapePasswordContainer
-                                }
-                            >
-                                <View
-                                    style={
-                                        this.state.viewMode === "portrait" ||
-                                        this.state.authMode === "login"
-                                            ? styles.portraitPasswordWrapper
-                                            : styles.landscapePasswordWrapper
-                                    }
-                                >
-                                    <DefaultInput
-                                        placeholder="Password"
-                                        style={styles.input}
-                                        value={this.state.controls.password.value}
-                                        onChangeText={val => this.updateInputState("password", val)}
-                                        valid={this.state.controls.password.valid}
-                                        touched={this.state.controls.password.touched}
-                                        secureTextEntry
-                                    />
-                                </View>
-
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                    {submitButton}
-                </KeyboardAvoidingView>
-            </ImageBackground>*/
             <View>
                 <Card style={{ borderWidth: 0 }}>
                     <CardSection style={{ backgroundColor: '#222228',  borderColor: '#222228' }}>
@@ -330,49 +267,18 @@ const styles = {
         color: 'red'
     }
 };
-/*const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    backgroundImage: {
-        width: "100%",
-        flex: 1
-    },
-    inputContainer: {
-        width: "80%"
-    },
-    input: {
-        backgroundColor: "#eee",
-        borderColor: "#bbb"
-    },
-    landscapePasswordContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between"
-    },
-    portraitPasswordContainer: {
-        flexDirection: "column",
-        justifyContent: "flex-start"
-    },
-    landscapePasswordWrapper: {
-        width: "45%"
-    },
-    portraitPasswordWrapper: {
-        width: "100%"
-    }
-});*/
 
 const mapStateToProps = state => {
     return {
-        isLoading: state.ui.isLoading
+        isLoading: state.ui.isLoading,
+        auth: state.auth
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode)),
-        onAutoSignIn: () => dispatch(authAutoSignIn())
+        onAutoSignIn: () => dispatch(authAutoSignIn()),
     };
 };
 

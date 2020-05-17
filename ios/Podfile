@@ -47,4 +47,6 @@ target 'mobile_client_rel' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-simple-crypto', :path => '../node_modules/react-native-simple-crypto'
+
 end
