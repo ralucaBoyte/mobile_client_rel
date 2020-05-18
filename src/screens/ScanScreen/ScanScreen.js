@@ -15,22 +15,6 @@ import {markAttendance, setAlertMessage} from "../../store/actions/attendance";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 class ScanScreen extends Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = { showAlert: this.props.attendance.showAlert };
-    // };
-    //
-    // showAlert = () => {
-    //     this.setState({
-    //         showAlert: this.props.attendance.showAlert
-    //     });
-    // };
-    //
-    // hideAlert = () => {
-    //     this.setState({
-    //         showAlert: this.props.attendance.showAlert
-    //     });
-    // };
     onSuccess = e => {
         let attendance_info_id = e.data.split("--")[0];
         console.log(attendance_info_id);
@@ -48,7 +32,6 @@ class ScanScreen extends Component {
     };
 
     render() {
-       // console.log(this.props.attendance);
         let showAlert = this.props.attendance.showAlert;
         let customMessage = `You marked attendance at \n ` + this.props.attendance.course + '-' + this.props.attendance.activity;
         let messageAlert = null;
@@ -72,7 +55,6 @@ class ScanScreen extends Component {
             <View style={styles.container}>
             <QRCodeScanner
                 onRead={this.onSuccess}
-                //flashMode={QRCodeScanner.Constants.FlashMode.torch}
                 topContent={
                     <Text style={styles.centerText}>
                         Scan the QR code to mark your attendance

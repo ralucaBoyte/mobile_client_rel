@@ -69,7 +69,8 @@ export const tryAuth = (authData, authMode) => {
                         dispatch(
                             authStoreToken(
                                 parsedRes.access_token,
-                                parsedRes.refresh_token
+                                parsedRes.refresh_token,
+                                authData.username
                             )
                         );
                         startMainTabs();
@@ -97,19 +98,20 @@ export const loginError = (message) =>{
 
 
 
-export const authStoreToken = (access_token, refresh_token) => {
+export const authStoreToken = (access_token, refresh_token, username) => {
     return dispatch => {
-        dispatch(authSetToken(access_token, refresh_token));
+        dispatch(authSetToken(access_token, refresh_token, username));
         AsyncStorage.setItem("ap:auth:access_token", access_token);
         AsyncStorage.setItem("ap:auth:refresh_token", refresh_token);
     };
 };
 
-export const authSetToken = (token, refreshToken) => {
+export const authSetToken = (token, refreshToken, username) => {
     return {
         type: AUTH_SET_TOKEN,
         access_token: token,
-        refresh_token: refreshToken
+        refresh_token: refreshToken,
+        username: username
     };
 };
 

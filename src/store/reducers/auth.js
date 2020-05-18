@@ -3,6 +3,7 @@ import { AUTH_SET_TOKEN, AUTH_REMOVE_TOKEN, LOGIN_ERROR, CLOSE_LOGIN_ERROR} from
 const initialState = {
     access_token: null,
     refresh_token: null,
+    username: '',
     errors: {},
     showErrors: false
 };
@@ -13,13 +14,15 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 access_token: action.access_token,
-                refresh_token: action.refresh_token
+                refresh_token: action.refresh_token,
+                username: action.username
             };
         case AUTH_REMOVE_TOKEN:
             return {
                 ...state,
                 access_token: null,
-                refresh_token: null
+                refresh_token: null,
+                username: ''
             };
         case LOGIN_ERROR:
             return {

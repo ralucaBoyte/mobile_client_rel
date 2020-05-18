@@ -4,12 +4,14 @@ import placesReducer from './reducers/places';
 import uiReducer from "./reducers/ui";
 import authReducer from "./reducers/auth";
 import attendanceReducer from "./reducers/attendance";
+import reviewReducer from "./reducers/reviews";
 import thunk from "redux-thunk";
 const rootReducer = combineReducers({
     places: placesReducer,
     ui: uiReducer,
     auth: authReducer,
-    attendance: attendanceReducer
+    attendance: attendanceReducer,
+    reviews: reviewReducer
 });
 
 let composeEnhancers = compose;

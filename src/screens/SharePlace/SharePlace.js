@@ -155,36 +155,23 @@ class SharePlaceScreen extends Component {
     };
 
     render() {
-        let submitButton = (
-            <Button
-                title="Share the Place!"
-                onPress={this.placeAddedHandler}
-                disabled={
-                    !this.state.controls.placeName.valid ||
-                    !this.state.controls.location.valid ||
-                    !this.state.controls.image.valid
-                }
-            />
-        );
+        const viewStyles = [
+            styles.container,
+            { backgroundColor: 'orange' }
+        ];
+        const textStyles = {
+            color: 'white',
+            fontSize: 40,
+            fontWeight: 'bold'
+        };
 
-        if (this.props.isLoading) {
-            submitButton = <ActivityIndicator />;
-        }
-
+        console.log(this.props.auth);
         return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <MainText>
-                        <HeadingText>Share a Place with us!</HeadingText>
-                    </MainText>
-
-                    <PlaceInput
-                        placeData={this.state.controls.placeName}
-                        onChangeText={this.placeNameChangedHandler}
-                    />
-                    <View style={styles.button}>{submitButton}</View>
-                </View>
-            </ScrollView>
+            <View style={viewStyles}>
+                <Text style={textStyles}>
+                    Welcome, {this.props.auth.username}
+                </Text>
+            </View>
         );
     }
 }
@@ -213,7 +200,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         isLoading: state.ui.isLoading,
-        placeAdded: state.places.placeAdded
+        placeAdded: state.places.placeAdded,
+        auth: state.auth
     };
 };
 

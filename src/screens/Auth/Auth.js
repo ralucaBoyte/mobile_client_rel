@@ -176,7 +176,7 @@ class AuthScreen extends Component {
 
     render() {
         let showAlert = this.props.auth.showErrors;
-        console.log(showAlert);
+       // console.log(showAlert);
         let headingText = null;
         let confirmPasswordControl = null;
         let messageAlert = null;
