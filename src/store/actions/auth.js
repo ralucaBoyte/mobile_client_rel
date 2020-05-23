@@ -28,65 +28,77 @@ export const getSecretPassword = async () => {
 
 };
 
+export const getUser = async () => {
+    try {
+        const value = await AsyncStorage.getItem('ap:auth:user');
+        return value;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
 
 export const tryAuth = (authData, authMode) => {
     return async dispatch => {
-        //dispatch(uiStartLoading());
         let secret_password = await getSecretPassword();
-        console.log(secret_password);
-
         let url = `${params.apiUrl}/authentication/login`;
-        console.log(authData.username + "+++++++++++");
-        console.log(authData.password + "+++++++++++");
+        let previous_user = await getUser();
 
-        RNCryptor.encrypt(authData.username, secret_password).then((encryptedbase64) => {
-            console.log(encryptedbase64);
-            let data = qs.stringify({
-                username: authData.username,
-                password: authData.password,
-                keyphrase: secret_password,
-                message: encryptedbase64
-            });
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    // Accept: "application/json",
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: data
+        if (previous_user && previous_user !== authData.username) {
+            alert("This app is currently used by " + previous_user);
+        } else {
 
-            })
+            console.log(authData.username + "+++++++++++");
+            console.log(authData.password + "+++++++++++");
 
-                .then(res => res.json())
-                .then(parsedRes => {
-                    console.log(parsedRes);
-                    console.log(parsedRes.access_token);
-                    if (!parsedRes.access_token) {
-                        //alert("Authentication failed, please try again!");
-                        //dispatch(loginError(parsedRes));
-                        alert(parsedRes);
-                    } else {
-                        dispatch(
-                            authStoreToken(
-                                parsedRes.access_token,
-                                parsedRes.refresh_token,
-                                authData.username
-                            )
-                        );
-                        startMainTabs();
-                    }
-                })
-                .catch(err => {
-                    console.log("CATCH ERROR");
-                    console.log(err);
-                    alert(err);
+            RNCryptor.encrypt(authData.username, secret_password).then((encryptedbase64) => {
+                console.log(encryptedbase64);
+                let data = qs.stringify({
+                    username: authData.username,
+                    password: authData.password,
+                    keyphrase: secret_password,
+                    message: encryptedbase64
                 });
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        // Accept: "application/json",
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: data
 
-        }).catch((error) => {
-            console.log(error)
-        });
+                })
 
-    };
+                    .then(res => res.json())
+                    .then(parsedRes => {
+                        console.log(parsedRes);
+                        //console.log(parsedRes.access_token);
+                        if (!parsedRes.access_token) {
+                            alert(parsedRes);
+                        } else {
+                            dispatch(
+                                authStoreToken(
+                                    parsedRes.access_token,
+                                    parsedRes.refresh_token,
+                                    authData.username
+                                )
+                            );
+                            startMainTabs();
+                        }
+                    })
+                    .catch(err => {
+                        console.log("CATCH ERROR");
+                        console.log(err);
+                        alert(err);
+                    });
+
+            }).catch((error) => {
+                console.log(error)
+            });
+
+        };
+    }
 };
 
 export const loginError = (message) =>{
@@ -103,6 +115,7 @@ export const authStoreToken = (access_token, refresh_token, username) => {
         dispatch(authSetToken(access_token, refresh_token, username));
         AsyncStorage.setItem("ap:auth:access_token", access_token);
         AsyncStorage.setItem("ap:auth:refresh_token", refresh_token);
+        AsyncStorage.setItem("ap:auth:user", username);
     };
 };
 
