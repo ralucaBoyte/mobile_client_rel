@@ -45,9 +45,6 @@ export const tryAuth = (authData, authMode) => {
         let url = `${params.apiUrl}/authentication/login`;
         let previous_user = await getUser();
 
-        if (previous_user && previous_user !== authData.username) {
-            alert("This app is currently used by " + previous_user);
-        } else {
 
             console.log(authData.username + "+++++++++++");
             console.log(authData.password + "+++++++++++");
@@ -70,12 +67,11 @@ export const tryAuth = (authData, authMode) => {
 
                 })
 
-                    .then(res => res.json())
+                    .then(res=> res.json())
                     .then(parsedRes => {
                         console.log(parsedRes);
-                        //console.log(parsedRes.access_token);
                         if (!parsedRes.access_token) {
-                            alert(parsedRes);
+                            alert(parsedRes.message);
                         } else {
                             dispatch(
                                 authStoreToken(
@@ -98,7 +94,6 @@ export const tryAuth = (authData, authMode) => {
             });
 
         };
-    }
 };
 
 export const loginError = (message) =>{

@@ -75,7 +75,7 @@ export const addReviewForProfessor = (professor, feedback, reviewGrade) => {
                 alert(response);
             })
             .catch(err => {
-                alert("Something went wrong, sorry :/");
+                alert(err);
                 console.log(err);
             });
     };

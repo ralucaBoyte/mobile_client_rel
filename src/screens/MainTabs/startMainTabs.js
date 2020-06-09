@@ -35,7 +35,7 @@ const startTabs = () => {
                                                 },
                                                 options: {
                                                     bottomTab: {
-                                                        text: 'Share',
+                                                        text: 'Welcome',
                                                         visible: true,
                                                         // icon: sources[0],
                                                         testID: 'FIRST_TAB_BAR_BUTTON'
@@ -74,7 +74,7 @@ const startTabs = () => {
                                                     },
                                                     options: {
                                                         bottomTab: {
-                                                            text: 'Find',
+                                                            text: 'Feedback',
                                                             //icon: sources[1],
                                                             testID: 'THIRD_TAB_BAR_BUTTON'
                                                         }

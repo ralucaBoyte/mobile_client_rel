@@ -253,7 +253,6 @@ class AuthScreen extends Component {
                     <CardSection>
                         {this.renderSubmitButton()}
                     </CardSection>
-                    {this.renderForgotButton()}
 
                 </Card>
             </View>
