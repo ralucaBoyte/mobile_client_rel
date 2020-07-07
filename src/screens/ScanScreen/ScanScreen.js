@@ -11,7 +11,12 @@ import {
 } from 'react-native';
 import { connect } from "react-redux";
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {markAttendance, setAlertMessage} from "../../store/actions/attendance";
+import {
+    getAllAttendancesForStudent,
+    markAttendance,
+    setAlertMessage,
+    setAttendanceInfoId
+} from "../../store/actions/attendance";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 class ScanScreen extends Component {
@@ -24,27 +29,36 @@ class ScanScreen extends Component {
     markAttendanceHandler = (attendance_info_id) => {
         this.props.onMarkAttendance(
             attendance_info_id
-        )
+        );
+        this.props.onSetAttendanceInfoId();
     };
 
     closeMessageHandler = () => {
         this.props.hideMessage(false);
+        this.scanner.reactivate()
     };
 
     render() {
         let showAlert = this.props.attendance.showAlert;
-        let customMessage = `You marked attendance at \n ` + this.props.attendance.course + '-' + this.props.attendance.activity;
+        let customMessage;
+        if(this.props.attendance.course === 0){
+            customMessage = this.props.attendance.message;
+        }
+        else{
+            customMessage = this.props.attendance.message + this.props.attendance.course + '-' + this.props.attendance.activity;
+        }
+
         let messageAlert = null;
         if(showAlert) {
             messageAlert = <AwesomeAlert
                 show={showAlert}
                 showProgress={false}
-                title="AwesomeAlert"
+                title="Marking attendance"
                 message={customMessage}
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
                 showConfirmButton={true}
-                confirmText="Great!"
+                confirmText="OK!"
                 confirmButtonColor="#DD6B55"
                 onConfirmPressed={() => {
                     this.closeMessageHandler();
@@ -54,12 +68,12 @@ class ScanScreen extends Component {
         return (
             <View style={styles.container}>
             <QRCodeScanner
+                ref={(node) => { this.scanner = node }}
                 onRead={this.onSuccess}
                 topContent={
                     <Text style={styles.centerText}>
                         Scan the QR code to mark your attendance
                     </Text>
-
                 }
                 bottomContent={
                     <TouchableOpacity style={styles.buttonTouchable}>
@@ -79,7 +93,8 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 18,
         padding: 32,
-        color: '#777'
+        color: '#777',
+        justifyContent: 'center'
     },
     textBold: {
         fontWeight: '500',
@@ -90,7 +105,7 @@ const styles = StyleSheet.create({
         color: 'rgb(0,122,255)'
     },
     buttonTouchable: {
-        padding: 16
+        padding: 16,
     },
     container:{
         flex: 1,
@@ -111,7 +126,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onMarkAttendance: (attendance_info_id) =>
             dispatch(markAttendance(attendance_info_id)),
-        hideMessage: () => dispatch(setAlertMessage(false))
+        hideMessage: () => dispatch(setAlertMessage(false)),
+        onSetAttendanceInfoId: (attendance_info_id) => dispatch(setAttendanceInfoId(attendance_info_id))
     }
 };
 

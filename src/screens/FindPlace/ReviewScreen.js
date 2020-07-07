@@ -1,17 +1,24 @@
 import React, {Component} from "react";
-import {View, Text, Button, StyleSheet} from "react-native";
+import {View, Text, Button, StyleSheet, TouchableOpacity, FlatList} from "react-native";
 import {connect} from "react-redux";
-import PlaceList from "../../components/PlaceList/PlaceList";
 import {Navigation} from "react-native-navigation";
 import { Dropdown } from 'react-native-material-dropdown';
-import {addReviewForProfessor, getAllProfessorsForStudent, setCurrentProfessor} from "../../store/actions/reviews";
-import {markAttendance, setAlertMessage} from "../../store/actions/attendance";
-import TextInput from "react-native-web/src/exports/TextInput";
-import PlaceInput from "../../components/PlaceInput/PlaceInput";
-import validate from "../../utility/validation";
-import NumericInput from 'react-native-numeric-input'
+import {
+    addReviewForProfessor,
+    getAllProfessorsForStudent,
+    getQuestions,
+    setCurrentProfessor
+} from "../../store/actions/reviews";
 
-class FindPlaceScreen extends Component{
+import PlaceInput from "../../components/PlaceInput/PlaceInput";
+import NumericInput from 'react-native-numeric-input'
+import PlaceDetail from "../PlaceDetail/PlaceDetail";
+
+
+//const WATER_IMAGE = require('./water.png')
+
+
+class ReviewScreen extends Component{
 
     static options() {
         return {
@@ -32,10 +39,11 @@ class FindPlaceScreen extends Component{
 
     componentDidMount() {
         this.props.onGetProfessors();
+        //this.props.onGetQuestions();
     }
 
     onChangeHandler = (value) => {
-        console.log(`Selected value: ${value}`);
+        //console.log(`Selected value: ${value}`);
         this.props.onChangedProfessorHandler(value);
     };
 
@@ -79,13 +87,14 @@ class FindPlaceScreen extends Component{
                     feedback: {
                         ...prevState.controls.feedback,
                         value: val,
-                        //valid: validate(val, prevState.controls.feedback.validationRules),
-                        //touched: true
+
                     }
                 }
             };
         });
     };
+
+
 
     reviewGradeChangedHandler = val => {
         this.setState(prevState => {
@@ -117,6 +126,9 @@ class FindPlaceScreen extends Component{
                 },
                 reviewGrade: {
                     value: null
+                },
+                reviewFromStudent: {
+                    questions: null
                 }
             }
         });
@@ -133,29 +145,22 @@ class FindPlaceScreen extends Component{
     };
 
         render() {
-            console.log(this.state.controls.feedback);
-            let submitButton = (
-                <Button
-                    title="Grade professor!"
-                    onPress={this.giveGradeForProfessor}
-                    // disabled={
-                    //     !this.state.controls.feedback.valid
-                    // }
-                />
-            );
 
             let data = this.props.reviews.professors;
+
             let values = [];
             data.map(user => values.push({value: user.username}));
             return (
-                <View>
+                <View style={styles.container}>
 
                 <Dropdown
                     label='Professor list'
                     data={values}
                     onChangeText = {(value => this.onChangeHandler(value))}
                 />
+                <View style={styles.second_container}>
                 <PlaceInput
+                    style={styles.professor}
                     placeData={this.state.controls.feedback}
                     onChangeText={this.feedbackChangedHandler}
                 />
@@ -174,8 +179,13 @@ class FindPlaceScreen extends Component{
                         textColor='#B0228C'
                         iconStyle={{ color: 'white' }}
                         rightButtonBackgroundColor='#EA3788'
-                        leftButtonBackgroundColor='#E56B70'/>
-                    <View style={styles.button}>{submitButton}</View>
+                        leftButtonBackgroundColor='#E56B70'
+                    />
+                    <TouchableOpacity style={styles.grade} onPress={this.giveGradeForProfessor}>
+                        <Text style={styles.gradeText}>Send observations</Text>
+                    </TouchableOpacity>
+                </View>
+
                 </View>
 
 
@@ -185,8 +195,22 @@ class FindPlaceScreen extends Component{
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: "center"
+        justifyContent: 'center',
+        marginTop: 3,
+        marginBottom: 3,
+        padding: 20
+    },
+    second_container: {
+        marginTop: 30,
+        alignItems: 'center'
+    },
+    professor: {
+        width: '100%',
+        padding: 3,
+        height: 10
+    },
+    feedback: {
+        height: 10,
     },
     placeholder: {
         borderWidth: 1,
@@ -196,7 +220,21 @@ const styles = StyleSheet.create({
         height: 150
     },
     button: {
-        margin: 8
+        marginTop: 20
+    },
+    grade: {
+        width:"80%",
+        backgroundColor:"#fa8072",
+        borderRadius:5,
+        height:50,
+        alignItems:"center",
+        alignSelf: 'center',
+        justifyContent:"center",
+        marginTop:40,
+        marginBottom:10
+    },
+    gradeText:{
+       color: 'white'
     },
     previewImage: {
         width: "100%",
@@ -207,7 +245,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        reviews: state.reviews
+        reviews: state.reviews,
     };
 };
 
@@ -215,9 +253,10 @@ const mapDispatchToProps = dispatch => {
     return {
         onGetProfessors: () => dispatch(getAllProfessorsForStudent()),
         onChangedProfessorHandler: (username) => dispatch(setCurrentProfessor(username)),
-        onGiveGradeReview: (professor, feedback, reviewGrade) => dispatch(addReviewForProfessor(professor, feedback, reviewGrade))
+        onGiveGradeReview: (professor, feedback, reviewGrade) => dispatch(addReviewForProfessor(professor, feedback, reviewGrade)),
+       // onGetQuestions: () => dispatch(getQuestions())
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (FindPlaceScreen);
+export default connect(mapStateToProps, mapDispatchToProps) (ReviewScreen);
 

@@ -7,7 +7,7 @@ import {Navigation} from "react-native-navigation";
 class PlaceDetail extends Component
 {
   placeDeletedHandler = () => {
-    this.props.onDeletePlace(this.props.selectedPlace.key);
+    //this.props.onDeletePlace(this.props.selectedPlace.key);
     Navigation.pop();
   };
   render()
@@ -15,15 +15,7 @@ class PlaceDetail extends Component
     return (
         <View style={styles.container}>
           <View>
-            <Image source={this.props.selectedPlace.image} style={styles.placeImage} />
-            <Text style={styles.placeName}>{this.props.selectedPlace.name}</Text>
-          </View>
-          <View>
-            <TouchableOpacity onPress={this.placeDeletedHandler}>
-              <View style={styles.deleteButton}>
-                <Icon size={30} name="ios-trash" color="red" />
-              </View>
-            </TouchableOpacity>
+            <Text style={styles.placeName}>{this.props.question.text}</Text>
           </View>
         </View>
     );
@@ -33,7 +25,7 @@ class PlaceDetail extends Component
 
 const mapDispatchToProps = dispatch => {
   return {
-    onDeletePlace: key => dispatch(deletePlace(key))
+    //onDeletePlace: key => dispatch(deletePlace(key))
   };
 };
 
@@ -49,7 +41,7 @@ const styles = StyleSheet.create({
   placeName: {
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 28
+    fontSize: 24
   },
   deleteButton: {
     alignItems: "center"

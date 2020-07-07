@@ -9,7 +9,7 @@ import {
     KeyboardAvoidingView,
     Keyboard,
     TouchableWithoutFeedback,
-    ActivityIndicator
+    ActivityIndicator, TouchableOpacity
 } from "react-native";
 import { connect } from "react-redux";
 
@@ -121,19 +121,6 @@ class AuthScreen extends Component {
         this.props.onTryAuth(authData, this.state.authMode);
     };
 
-    renderForgotButton() {
-        if (this.props.loading) {
-            return <View />
-        }
-        return (
-            <CardSection>
-                <Button style={{ backgroundColor: '#44C7F4' }} onPress={this.onForgotPasswordButtonPress.bind(this)}>
-                    FORGOT
-                </Button>
-            </CardSection>
-        );
-    }
-
     updateInputState = (key, value) => {
         let connectedValue = {};
         if (this.state.controls[key].validationRules.equalTo) {
@@ -218,48 +205,78 @@ class AuthScreen extends Component {
             submitButton = <ActivityIndicator />;
         }
         return (
-            <View>
-                <Card style={{ borderWidth: 0 }}>
-                    <CardSection style={{ backgroundColor: '#222228',  borderColor: '#222228' }}>
-                        <ImageView />
-                    </CardSection>
-                </Card>
-                <Card>
-                    <CardSection>
-                        <Input
-                            label="username"
-                            placeholder="username"
-                            onChangeText={val => this.updateInputState("username", val)}
-                            value={this.state.controls.username.value}
+            <View style={styles.container}>
+                <Text style={styles.logo}>Attendance tracker</Text>
+                <View style={styles.inputView} >
+                    <TextInput
+                        style={styles.inputText}
+                        placeholder="Username"
+                        placeholderTextColor="#003f5c"
+                        onChangeText={val => this.updateInputState("username", val)}
+                        value={this.state.controls.username.value}/>
+                </View>
+                <View style={styles.inputView} >
+                    <TextInput
+                        secureTextEntry
+                        style={styles.inputText}
+                        placeholder="Password"
+                        placeholderTextColor="#003f5c"
+                        onChangeText={val => this.updateInputState("password", val)}
+                        value={this.state.controls.password.value}/>
+                </View>
+                <TouchableOpacity style={styles.loginBtn} onPress={this.authHandler}>
+                    <Text style={styles.loginText}>LOGIN</Text>
+                </TouchableOpacity>
 
-                        />
-                    </CardSection>
 
-                    <CardSection>
-                        <Input
-                            secureTextEntry
-                            label="password"
-                            placeholder="password"
-                            onChangeText={val => this.updateInputState("password", val)}
-                            value={this.state.controls.password.value}
-
-                        />
-                    </CardSection>
-
-                    <Text style={styles.errorTextStyle}>
-                        {this.props.error}
-                    </Text>
-
-                    <CardSection>
-                        {this.renderSubmitButton()}
-                    </CardSection>
-
-                </Card>
             </View>
         );
     }
 }
 const styles = {
+    container: {
+        flex: 1,
+        backgroundColor: '#869BA6',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    logo:{
+        fontWeight:"bold",
+        fontSize:35,
+        color:"#F77E70",
+        marginBottom:40,
+
+    },
+    inputView:{
+        width:"80%",
+        backgroundColor:"#c0c0c0",
+        borderRadius:25,
+        height:50,
+        marginBottom:20,
+        justifyContent:"center",
+        padding:20
+    },
+    inputText:{
+        height:50,
+        color:"black"
+    },
+    forgot:{
+        color:"white",
+        fontSize:11
+    },
+    loginBtn:{
+        width:"80%",
+        backgroundColor:"#fa8072",
+        borderRadius:25,
+        height:50,
+        alignItems:"center",
+        justifyContent:"center",
+        marginTop:40,
+        marginBottom:10
+    },
+    loginText:{
+        color:"white"
+    },
     errorTextStyle: {
         fontSize: 14,
         alignSelf: 'center',

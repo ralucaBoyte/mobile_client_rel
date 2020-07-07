@@ -2,9 +2,12 @@ import {Navigation} from "react-native-navigation";
 import Icon from "react-native-vector-icons/Ionicons";
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import SharePlaceScreen from "../SharePlace/SharePlace";
-import FindPlaceScreen from "../FindPlace/FindPlace";
+import ReviewScreen from "../FindPlace/ReviewScreen";
 import React from "react";
+const ScanIcon = require('../../assets/scan.png');
+const HomeIcon = require('../../assets/home.png');
+const ReviewIcon = require('../../assets/review.png');
+const SurveyIcon = require('../../assets/survey.png');
 
 const startTabs = () => {
     Promise.all([
@@ -29,15 +32,20 @@ const startTabs = () => {
                                     stack: {
                                         children: [{
                                             component: {
-                                                name: 'mobile_client_rel.SharePlaceScreen',
+                                                name: 'mobile_client_rel.HomeScreen',
                                                 passProps: {
                                                     text: 'Share place screen'
                                                 },
                                                 options: {
+                                                    topBar: {
+                                                        title: {
+                                                            text: 'View my attendances'
+                                                        }
+                                                    },
                                                     bottomTab: {
-                                                        text: 'Welcome',
+                                                        text: 'Home',
                                                         visible: true,
-                                                        // icon: sources[0],
+                                                        icon: HomeIcon,
                                                         testID: 'FIRST_TAB_BAR_BUTTON'
                                                     }
                                                 }
@@ -46,6 +54,7 @@ const startTabs = () => {
                                         ],
                                     }
                                 },
+
                                 {
                                     component: {
                                         name: 'mobile_client_rel.ScanScreen',
@@ -54,8 +63,9 @@ const startTabs = () => {
                                         },
                                         options: {
                                             bottomTab: {
-                                                text: 'QR',
-                                                //icon: sources[1],
+                                                text: 'Scan QR',
+                                                visible: true,
+                                                icon: ScanIcon,
                                                 testID: 'SECOND_TAB_BAR_BUTTON'
                                             }
                                         }
@@ -64,18 +74,58 @@ const startTabs = () => {
 
                                 {
                                     stack: {
+                                        id: "myStack2",
+                                        children: [
+                                            {
+                                                component: {
+                                                    name: 'mobile_client_rel.AnswerQuestionsScreen',
+                                                    passProps: {
+                                                        text: 'Take survey'
+                                                    },
+                                                    options: {
+                                                        topBar: {
+                                                            title: {
+                                                                text: 'Take survey for class'
+                                                            }
+                                                        },
+                                                        bottomTab: {
+                                                            text: 'Survey',
+                                                            visible: true,
+                                                            icon: SurveyIcon,
+                                                            testID: 'FOURTH_TAB_BAR_BUTTON'
+                                                        }
+                                                    },
+                                                    navigatorButtons: {
+                                                        leftButtons: [
+                                                            {
+                                                                title: "menu"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }]
+                                    }
+                                },
+                                {
+                                    stack: {
                                         id: "myStack",
                                         children: [
                                             {
                                                 component: {
-                                                    name: 'mobile_client_rel.FindPlaceScreen',
+                                                    name: 'mobile_client_rel.ReviewScreen',
                                                     passProps: {
                                                         text: 'Find places'
                                                     },
                                                     options: {
+                                                        topBar: {
+                                                            title: {
+                                                                text: 'Send observations for a professor'
+                                                            }
+                                                        },
                                                         bottomTab: {
                                                             text: 'Feedback',
-                                                            //icon: sources[1],
+                                                            visible: true,
+                                                            icon: ReviewIcon,
                                                             testID: 'THIRD_TAB_BAR_BUTTON'
                                                         }
                                                     },

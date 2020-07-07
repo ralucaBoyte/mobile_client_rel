@@ -49,4 +49,5 @@ target 'mobile_client_rel' do
 
   pod 'react-native-simple-crypto', :path => '../node_modules/react-native-simple-crypto'
 
+
 end

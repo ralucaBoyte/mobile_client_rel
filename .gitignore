@@ -10,7 +10,9 @@ npm-debug.*
 *.orig.*
 web-build/
 web-report/
-
+.idea
+.expo
+.expo-shared
 # macOS
 .DS_Store
 *.tar.gz

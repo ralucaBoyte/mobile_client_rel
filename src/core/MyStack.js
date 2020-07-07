@@ -2,7 +2,7 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AuthScreen from "../screens/Auth/Auth";
-import SharePlaceScreen from "../screens/SharePlace/SharePlace";
+import HomeScreen from "../screens/Home/HomeScreen";
 
 const Stack = createStackNavigator();
 
@@ -16,8 +16,8 @@ function MyStack() {
                     options={{title: 'AuthScreen'}}
                 />
                 <Stack.Screen
-                    name="mobile_client_rel.SharePlaceScreen"
-                    component={SharePlaceScreen} />
+                    name="mobile_client_rel.HomeScreen"
+                    component={HomeScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

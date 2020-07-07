@@ -7,7 +7,6 @@ import App from "../../../App";
 import params from "../../../params-sample";
 import {Navigation} from "react-native-navigation";
 import RNCryptor from 'react-native-rncryptor';
-
 let randomString = require('random-string');
 
 export const getSecretPassword = async () => {
@@ -17,10 +16,10 @@ export const getSecretPassword = async () => {
             console.log("SECRET PASSWORD ALREADY IN STORE");
             return value;
         } else {
-            let secret_password = randomString();
-            console.log("GENERATED NEW SECRET PASSWORD");
-            AsyncStorage.setItem('ap:auth:secret_password', secret_password);
-            return secret_password;
+                let secret_password = randomString({length: 64});
+                console.log("GENERATED NEW SECRET PASSWORD");
+                AsyncStorage.setItem('ap:auth:secret_password', secret_password);
+                return secret_password;
         }
     } catch (error) {
         console.log(error);
@@ -43,19 +42,14 @@ export const tryAuth = (authData, authMode) => {
     return async dispatch => {
         let secret_password = await getSecretPassword();
         let url = `${params.apiUrl}/authentication/login`;
-        let previous_user = await getUser();
 
-
-            console.log(authData.username + "+++++++++++");
-            console.log(authData.password + "+++++++++++");
 
             RNCryptor.encrypt(authData.username, secret_password).then((encryptedbase64) => {
-                console.log(encryptedbase64);
                 let data = qs.stringify({
                     username: authData.username,
                     password: authData.password,
                     keyphrase: secret_password,
-                    message: encryptedbase64
+                    message: encryptedbase64,
                 });
                 fetch(url, {
                     method: "POST",
@@ -69,7 +63,7 @@ export const tryAuth = (authData, authMode) => {
 
                     .then(res=> res.json())
                     .then(parsedRes => {
-                        console.log(parsedRes);
+                        //console.log(parsedRes);
                         if (!parsedRes.access_token) {
                             alert(parsedRes.message);
                         } else {
@@ -92,8 +86,8 @@ export const tryAuth = (authData, authMode) => {
             }).catch((error) => {
                 console.log(error)
             });
-
         };
+
 };
 
 export const loginError = (message) =>{

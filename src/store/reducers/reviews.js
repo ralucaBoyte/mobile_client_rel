@@ -1,13 +1,15 @@
 import {
     ADD_REVIEW_FOR_PROFESSOR,
     GET_ALL_PROFESSORS,
-    CHANGED_CURRENT_PROFESSOR
+    CHANGED_CURRENT_PROFESSOR,
+    GET_ALL_QUESTIONS
 } from "../actions/actionTypes";
 
 const initialState = {
     professors: [],
     loadingProfessors: true,
-    currentProfessor: ''
+    currentProfessor: '',
+    questions: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -22,7 +24,12 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentProfessor: action.currentProfessor
-            }
+            };
+        case GET_ALL_QUESTIONS:
+            return {
+                ...state,
+                questions: action.questions,
+            };
         default:
             return state;
     }
