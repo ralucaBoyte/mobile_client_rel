@@ -18,6 +18,8 @@ web-report/
 *.tar.gz
 
 # Android
+android
+ios
 .gradle
 local.properties
 android/out
